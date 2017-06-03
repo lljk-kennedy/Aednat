@@ -8,7 +8,7 @@ import datetime
 import configparser
 from enum import Enum
 
-logging.basicConfig(filename='output.log',level=logging.DEBUG)
+logging.basicConfig(filename='./logs/'+datetime.datetime.now().strftime("%Y-%m-%d")+'.log',level=logging.DEBUG)
 
 class GDAXClientWrapper:
 
@@ -18,7 +18,7 @@ class GDAXClientWrapper:
     def __init__(self, client_type, product):
         self.product_id = product
         config = configparser.ConfigParser()
-        config.read('apiKeys.config')
+        config.read('./config/apiKeys.config')
 
         if client_type == self.ClientType['PUBLIC']:
             self.publicClient = GDAX.PublicClient(product_id=product)
