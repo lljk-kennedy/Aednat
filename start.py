@@ -1,9 +1,8 @@
-from GDAXClient import GDAXClient
+from GDAXPublicClient import GDAXPublicClient
+from GDAXClientWrapper import GDAXClientWrapper
 
 
-# publicClient = GDAX.PublicClient()
-# Set a default product
-client = GDAXClient(product="ETH-EUR")
+client = GDAXClientWrapper(GDAXClientWrapper.ClientType['PUBLIC'], product="ETH-EUR" )
 
 client.getProducts()
 client.getProductTicker()

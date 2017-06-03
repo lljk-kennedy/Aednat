@@ -5,21 +5,44 @@ import numpy as np
 import matplotlib.pyplot as plt
 import logging
 import datetime
+import configparser
+from enum import Enum
 
-logging.basicConfig(filename='output.log',level=logging.INFO)
+logging.basicConfig(filename='output.log',level=logging.DEBUG)
 
-class GDAXClient:
+class GDAXClientWrapper:
 
     json_indent = 3
+    ClientType = Enum('ClientType', 'PUBLIC READ-ONLY READ-TRANSFER READ-TRANSFER-TRADE FULL-ACCESS')
 
-    def __init__(self, product):
+    def __init__(self, client_type, product):
         self.product_id = product
-        self.publicClient = GDAX.PublicClient(product_id=product)
+        config = configparser.ConfigParser()
+        config.read('apiKeys.config')
+
+        if client_type == self.ClientType['PUBLIC']:
+            self.publicClient = GDAX.PublicClient(product_id=product)
+            self.authType = "PUBLIC (** NO AUTH **)"
+        elif client_type == self.ClientType['READ-ONLY']:
+            self.publicClient = GDAX.AuthenticatedClient(config['READ-ONLY']['key'], config['READ-ONLY']['b64secret'], config['READ-ONLY']['passphrase'], product_id=product)
+            self.authType = "READ-ONLY (" + config['READ-ONLY']['key'] + ")"
+        elif client_type == self.ClientType['READ-TRANSFER']:
+            self.publicClient = GDAX.AuthenticatedClient(config['READ-TRANSFER']['key'], config['READ-TRANSFER']['b64secret'], config['READ-TRANSFER']['passphrase'], product_id=product)
+            self.authType = "READ-TRANSFER (" + config['READ-TRANSFER']['key'] + ")"
+        elif client_type == self.ClientType['READ-TRANSFER-TRADE']:
+            self.publicClient = GDAX.AuthenticatedClient(config['READ-TRANSFER-TRADE']['key'], config['READ-TRANSFER-TRADE']['b64secret'], config['READ-TRANSFER-TRADE']['passphrase'], product_id=product)
+            self.authType = "READ-TRANSFER-TRADE (" + config['READ-TRANSFER-TRADE']['key'] + ")"
+        elif client_type == self.ClientType['FULL-ACCESS']:
+            self.publicClient = GDAX.AuthenticatedClient(config['FULL-ACCESS']['key'], config['FULL-ACCESS']['b64secret'], config['FULL-ACCESS']['passphrase'], product_id=product)
+            self.authType = "FULL-ACCESS (" + config['FULL-ACCESS']['key'] + ")"
+
+        logging.info("*** [" + self.authType + "] CLIENT: authenticated at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
+
 
     # https://docs.gdax.com/#get-products
     def getProducts(self):
         data = self.publicClient.getProducts()
-        logging.info("*** getProducts called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
+        logging.info("*** [" + self.authType + "] CLIENT: getProducts called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
         retVal = json.dumps(data,indent=self.json_indent)
         logging.info(retVal)
         return retVal
@@ -27,56 +50,56 @@ class GDAXClient:
     # https://docs.gdax.com/#get-product-order-book
     def getProductOrderBook(self, level):
         data = self.publicClient.getProductOrderBook(level)
-        logging.info("*** getProductOrderBook called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
+        logging.info("*** [" + self.authType + "] CLIENT: getProductOrderBook called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
         retVal = json.dumps(data,indent=self.json_indent)
         logging.info(retVal)
         return retVal
 
     def getProductTicker(self):
         data = self.publicClient.getProductTicker()
-        logging.info("*** getProductTicker called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
+        logging.info("*** [" + self.authType + "] CLIENT: getProductTicker called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
         retVal = json.dumps(data,indent=self.json_indent)
         logging.info(retVal)
         return retVal
 
     def getProductTrades(self):
         data = self.publicClient.getProductTrades()
-        logging.info("*** getProductTrades called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
+        logging.info("*** [" + self.authType + "] CLIENT: getProductTrades called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
         retVal = json.dumps(data,indent=self.json_indent)
         logging.info(retVal)
         return retVal
 
     def getCurrentPrice(self):
         data = self.publicClient.getProductTicker()
-        logging.info("*** getCurrentPrice called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
+        logging.info("*** [" + self.authType + "] CLIENT: getCurrentPrice called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
         retVal = json.dumps(float(data['ask']), indent=self.json_indent)
         logging.info(retVal)
         return retVal
 
     def getProductHistoricRates(self):
         data = self.publicClient.getProductHistoricRates()
-        logging.info("*** getProductHistoricRates called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
+        logging.info("*** [" + self.authType + "] CLIENT: getProductHistoricRates called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
         retVal = json.dumps(data,indent=self.json_indent)
         logging.info(retVal)
         return retVal
 
     def getProduct24HrStats(self):
         data = self.publicClient.getProduct24HrStats()
-        logging.info("*** getProduct24HrStats called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
+        logging.info("*** [" + self.authType + "] CLIENT: getProduct24HrStats called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
         retVal = json.dumps(data,indent=self.json_indent)
         logging.info(retVal)
         return retVal
 
     def getCurrencies(self):
         data = self.publicClient.getCurrencies()
-        logging.info("*** getCurrencies called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
+        logging.info("*** [" + self.authType + "] CLIENT: getCurrencies called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
         retVal = json.dumps(data,indent=self.json_indent)
         logging.info(retVal)
         return retVal
 
     def getTime(self):
         data = self.publicClient.getTime()
-        logging.info("*** getTime called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
+        logging.info("*** [" + self.authType + "] CLIENT: getTime called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
         retVal = json.dumps(data,indent=self.json_indent)
         logging.info(retVal)
         return retVal
