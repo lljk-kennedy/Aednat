@@ -1,6 +1,4 @@
-from GDAXPublicClient import GDAXPublicClient
 from GDAXClientWrapper import GDAXClientWrapper
-
 
 client = GDAXClientWrapper(GDAXClientWrapper.ClientType['PUBLIC'], product="ETH-EUR" )
 
