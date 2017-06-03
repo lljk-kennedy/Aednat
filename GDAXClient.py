@@ -3,6 +3,10 @@ import json
 import matplotlib.pyplot as plt; plt.rcdefaults()
 import numpy as np
 import matplotlib.pyplot as plt
+import logging
+import datetime
+
+logging.basicConfig(filename='output.log',level=logging.INFO)
 
 class GDAXClient:
 
@@ -15,45 +19,71 @@ class GDAXClient:
     # https://docs.gdax.com/#get-products
     def getProducts(self):
         data = self.publicClient.getProducts()
-        return json.dumps(data,indent=self.json_indent)
+        logging.info("*** getProducts called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
+        retVal = json.dumps(data,indent=self.json_indent)
+        logging.info(retVal)
+        return retVal
 
     # https://docs.gdax.com/#get-product-order-book
     def getProductOrderBook(self, level):
         data = self.publicClient.getProductOrderBook(level)
-        return json.dumps(data, indent=self.json_indent)
+        logging.info("*** getProductOrderBook called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
+        retVal = json.dumps(data,indent=self.json_indent)
+        logging.info(retVal)
+        return retVal
 
     def getProductTicker(self):
         data = self.publicClient.getProductTicker()
-        return json.dumps(data, indent=self.json_indent)
+        logging.info("*** getProductTicker called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
+        retVal = json.dumps(data,indent=self.json_indent)
+        logging.info(retVal)
+        return retVal
 
     def getProductTrades(self):
         data = self.publicClient.getProductTrades()
-        return json.dumps(data, indent=self.json_indent)
+        logging.info("*** getProductTrades called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
+        retVal = json.dumps(data,indent=self.json_indent)
+        logging.info(retVal)
+        return retVal
 
     def getCurrentPrice(self):
         data = self.publicClient.getProductTicker()
-        return json.dumps(float(data['ask']), indent=self.json_indent)
+        logging.info("*** getCurrentPrice called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
+        retVal = json.dumps(float(data['ask']), indent=self.json_indent)
+        logging.info(retVal)
+        return retVal
 
     def getProductHistoricRates(self):
         data = self.publicClient.getProductHistoricRates()
-        return json.dumps(data, indent=self.json_indent)
+        logging.info("*** getProductHistoricRates called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
+        retVal = json.dumps(data,indent=self.json_indent)
+        logging.info(retVal)
+        return retVal
 
     def getProduct24HrStats(self):
         data = self.publicClient.getProduct24HrStats()
-        return json.dumps(data, indent=self.json_indent)
+        logging.info("*** getProduct24HrStats called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
+        retVal = json.dumps(data,indent=self.json_indent)
+        logging.info(retVal)
+        return retVal
 
     def getCurrencies(self):
         data = self.publicClient.getCurrencies()
-        return json.dumps(data, indent=self.json_indent)
+        logging.info("*** getCurrencies called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
+        retVal = json.dumps(data,indent=self.json_indent)
+        logging.info(retVal)
+        return retVal
 
     def getTime(self):
         data = self.publicClient.getTime()
-        return json.dumps(data, indent=self.json_indent)
+        logging.info("*** getTime called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
+        retVal = json.dumps(data,indent=self.json_indent)
+        logging.info(retVal)
+        return retVal
 
     def setProductId(self, product_id):
         self.product_id = product_id;
         self.publicClient = GDAX.PublicClient(product_id=self.product_id)
-
 
     def printBuys(self):
         data = self.publicClient.getProductOrderBook(level=2)
