@@ -121,7 +121,7 @@ class GDAXClientWrapper:
         try:
             data = self.client.getProductTicker()
             logging.info("ENV: " + str(self.environment_type.name) + " | [" + self.clientTypeForLogging + "] CLIENT: getCurrentPrice called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
-            retVal = json.dumps(float(data['ask']), indent=self.json_indent)
+            retVal = json.dumps(float(data['price']), indent=self.json_indent)
             logging.info(retVal)
             return retVal
         except Exception as e:
@@ -130,9 +130,9 @@ class GDAXClientWrapper:
 
     def getProductHistoricRates(self):
         try:
-            data = self.client.getProductHistoricRates()
+            data = self.client.getProductHistoricRates(granularity=60)
             logging.info("ENV: " + str(self.environment_type.name) + " | [" + self.clientTypeForLogging + "] CLIENT: getProductHistoricRates called at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " ******")
-            retVal = json.dumps(data,indent=self.json_indent)
+            retVal = data
             logging.info(retVal)
             return retVal
         except Exception as e:
@@ -347,51 +347,3 @@ class GDAXClientWrapper:
         except Exception as e:
             logging.error("ENV: " + str(self.environment_type.name) + " | [" + self.clientTypeForLogging + "] CLIENT: close - " + str(e) + " ******")
             print e
-
-
-    def printAsks(self):
-        data = self.client.getProductOrderBook(level=2)
-
-
-        objects = []
-        performance = []
-        total = 0
-
-        for item in data['asks']:
-            # print json.dumps(item, indent=self.json_indent)
-            total = total + float(item[1])
-            print "asks @ " + item[0] + ": size " + item[1] + ", num-orders: ", item[2]
-            objects.append(item[0])
-            performance.append(total)
-
-        y_pos = np.arange(len(objects))
-
-        plt.bar(y_pos, performance, align='center', alpha=0.5)
-        plt.xticks(y_pos, objects, rotation=90)
-        plt.ylabel('Volume')
-        plt.title('Asks')
-
-        plt.show()
-
-    def printBuys(self):
-        data = self.client.getProductOrderBook(level=2)
-
-        objects = []
-        performance = []
-        total = 0
-
-        for item in reversed(data['bids']):
-            # print json.dumps(item, indent=self.json_indent)
-            total = total + float(item[1])
-            print "Bids @ " + item[0] + ": size " + item[1] + ", num-orders: ", item[2]
-            objects.append(item[0])
-            performance.append(total)
-
-        y_pos = np.arange(len(objects))
-
-        plt.bar(y_pos, performance, align='center', alpha=0.5)
-        plt.xticks(y_pos,objects, rotation=90)
-        plt.ylabel('Volume')
-        plt.title('Buys')
-
-        plt.show()

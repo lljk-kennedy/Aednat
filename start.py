@@ -1,5 +1,6 @@
 from GDAXClientWrapper import GDAXClientWrapper
 import time
+import datetime
 client = GDAXClientWrapper(GDAXClientWrapper.ClientType['FULL-ACCESS'], environment=GDAXClientWrapper.Env["LIVE"], product="ETH-EUR" )
 # wsClient = GDAXClientWrapper(GDAXClientWrapper.ClientType['FEED'], environment=GDAXClientWrapper.Env["FEED"], product="ETH-EUR" )
 # order_book =  GDAXClientWrapper(GDAXClientWrapper.ClientType['ORDERBOOK'], environment=GDAXClientWrapper.Env["ORDERBOOK"], product="ETH-EUR" )
@@ -8,7 +9,27 @@ client = GDAXClientWrapper(GDAXClientWrapper.ClientType['FULL-ACCESS'], environm
 # client.getProducts()
 # client.getProductTicker()
 # client.getProductTrades()
-# client.getProductHistoricRates()
+history =  client.getProductHistoricRates()
+
+times = []
+lows = []
+highs = []
+opens = []
+closes = []
+volumes = []
+
+for item in history:
+	item[0] = datetime.datetime.fromtimestamp(item[0]).strftime('%Y-%m-%d %H:%M:%S')
+	times.append(item[0])
+	lows.append(item[1])
+	highs.append(item[2])
+	opens.append(item[3])
+	closes.append(item[4])
+	volumes.append(item[5])
+
+print "Lowest: ", min(lows)
+print "Highest: ", max(highs)
+
 # client.getProduct24HrStats()
 # client.getCurrencies()
 # client.getTime()
@@ -16,8 +37,8 @@ client = GDAXClientWrapper(GDAXClientWrapper.ClientType['FULL-ACCESS'], environm
 # requires auth
 # client.getAccounts()
 # testAccountID = "0ec2697b-ef2f-49eb-a486-4eb31ef323a5"
-liveAccountID = "4271afec-d6c0-4f0f-af62-d5bfd3113eeb"
-client.getAccount(liveAccountID)
+# liveAccountID = "4271afec-d6c0-4f0f-af62-d5bfd3113eeb"
+# client.getAccount(liveAccountID)
 # client.getAccountHistory(liveAccountID)
 # client.getAccountHolds(testAccountID)
 
@@ -30,13 +51,13 @@ client.getAccount(liveAccountID)
 # client.buy(buyParams)
 
 # Sell 0.01 BTC @ 200 USD
-sellParams = {
-        'price': '198.00', #USD
-        'size': '0.015', #BTC
-        'product_id': 'ETH-EUR'
-}
-client.sell(sellParams)
-client.getAccount(liveAccountID)
+# sellParams = {
+#         'price': '198.00', #USD
+#         'size': '0.015', #BTC
+#         'product_id': 'ETH-EUR'
+# }
+# client.sell(sellParams)
+# client.getAccount(liveAccountID)
 
 # client.cancelOrder("d50ec984-77a8-460a-b958-66f114b0de9b")
 # client.cancelOrder(productId='BTC-USD')
